@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "83062313395",
+    "project_id": "alemeno-intern-task",
+    "storage_bucket": "alemeno-intern-task.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83062313395:android:392cdd0aa3d25db90dbbc6",
+        "android_client_info": {
+          "package_name": "com.example.almeno"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "83062313395-1t55o0s1trnjtebpvefvtt7ebj8pmo4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjUicfwpbQ26lfuQIiNA9Ivvzw7GecK58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "83062313395-1t55o0s1trnjtebpvefvtt7ebj8pmo4t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
