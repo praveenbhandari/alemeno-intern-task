@@ -1,12 +1,17 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+String img='';
+Widget ww=placeholder();
+String tex="Click your meal";
+Widget icon_w=Icon(Icons.camera_alt,color: Colors.white,);
+Widget icon_c=Icon(Icons.check,color: Colors.white,);
 class firebaseinstance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -50,15 +55,16 @@ class _home_pageState extends State<home_page> {
   double height = 10;
   double width = 10;
 
-  Future<void> upload() async {
-    final Directory systemTempDir = Directory.systemTemp;
-    final byteData = await rootBundle.load("images/1.png");
+  Future<void> upload(String pathh,String name) async {
+    // final Directory systemTempDir = Directory.systemTemp;
+    // final byteData = await rootBundle.load(pathh);
     // final byteDat = await rootBundle.load("/images/1.png");
-
-    final file = File('${systemTempDir.path}/1.png');
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-    TaskSnapshot snapshot = await storage.ref().child("1.png").putFile(file);
+print("byte");
+    final file = File(pathh);
+print("ff"+file.toString());
+    // await file.writeAsBytes(byteData.buffer
+    //     .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    TaskSnapshot snapshot = await storage.ref().child(name).putFile(file);
     if (snapshot.state == TaskState.success) {
       final String downloadUrl = await snapshot.ref.getDownloadURL();
       print(downloadUrl);
@@ -74,6 +80,33 @@ class _home_pageState extends State<home_page> {
       print('Error from image repo ${snapshot.state.toString()}');
       throw ('This file is not an image');
     }
+  }
+
+
+  void filee()async{
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom,
+      allowedExtensions: ['jpg','png','jpeg'],);
+print(result?.files.single.path);
+
+if(result != null){
+  File file = File(result.files.single.path.toString());
+    print("asad"+file.toString());
+    setState(() {
+      ww=imgggg();
+      img=result.files.single.path.toString();
+    });
+  upload(result.files.single.path.toString(), result.files.first.name);
+}
+    // File file = await FilePicker.getFile
+    //   type: FileType.custom,
+    //   allowedExtensions: ['pdf','docx'], //here you can add any of extention what you need to pick
+    // );
+    // if (result != null) {
+    //   File file = File(result.files.single.path);
+    //   print(file);
+    // } else {
+    //   // User canceled the picker
+    // }
   }
 
   @override
@@ -137,11 +170,7 @@ class _home_pageState extends State<home_page> {
                               image: AssetImage(
                             'images/Vector.png',
                           )),
-                          Image(
-                            image: AssetImage(
-                              'images/Vector (2).png',
-                            ),
-                          ),
+                          ww,
                           Image(
                             image: AssetImage(
                               'images/Vector (1).png',
@@ -149,7 +178,7 @@ class _home_pageState extends State<home_page> {
                           ),
                         ],
                       ),
-                      Text("Click to add your meal",style: TextStyle(fontSize: 20),),
+                      Text(tex,style: TextStyle(fontSize: 20),),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.green,
@@ -160,10 +189,13 @@ class _home_pageState extends State<home_page> {
                         ),
                         child: FlatButton(
                           // color: Colors.green,
-                          child: Icon(Icons.camera_alt,color: Colors.white,),
+                          child: icon_w,
                           onPressed: () {
                             // upload();
+                            filee();
                             setState(() {
+                              tex="Will you eat this?";
+                              icon_w=icon_c;
                               height = height + 20.0;
                               width = width + 20.0;
                             });
@@ -181,3 +213,39 @@ class _home_pageState extends State<home_page> {
     );
   }
 }
+
+class placeholder extends StatelessWidget {
+  const placeholder({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+        image: AssetImage(
+          'images/Vector (2).png',
+        ));
+  }
+}
+
+class imgggg extends StatelessWidget {
+  const imgggg({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      width: 200,
+      child: CircleAvatar(
+// backgroundImage: ,
+        // radius: 20,
+        backgroundColor: Colors.grey[700],
+        child: ClipOval(
+          child: Image.file(File(img),
+            width: 200,
+            height: 200,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
