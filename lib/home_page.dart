@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:almeno/exit.dart';
+import 'package:almeno/main.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,8 +12,10 @@ import 'package:flutter/services.dart';
 String img='';
 Widget ww=placeholder();
 String tex="Click your meal";
+int cc=0;
 Widget icon_w=Icon(Icons.camera_alt,color: Colors.white,);
 Widget icon_c=Icon(Icons.check,color: Colors.white,);
+
 class firebaseinstance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -52,8 +56,8 @@ class home_page extends StatefulWidget {
 
 class _home_pageState extends State<home_page> {
   var storage = FirebaseStorage.instance;
-  double height = 10;
-  double width = 10;
+  double height = 50;
+  double width = 50;
 
   Future<void> upload(String pathh,String name) async {
     // final Directory systemTempDir = Directory.systemTemp;
@@ -74,8 +78,12 @@ print("ff"+file.toString());
       // setState(() {
       //   isLoading = false;
       // });
-      final snackBar = SnackBar(content: Text('Yay! Success'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  exittt()));
     } else {
       print('Error from image repo ${snapshot.state.toString()}');
       throw ('This file is not an image');
@@ -83,20 +91,32 @@ print("ff"+file.toString());
   }
 
 
+  String pathh="",nameee="";
   void filee()async{
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom,
-      allowedExtensions: ['jpg','png','jpeg'],);
-print(result?.files.single.path);
+if(cc<2){
+  FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.custom,
+    allowedExtensions: ['jpg','png','jpeg'],);
+  print(result?.files.single.path);
 
-if(result != null){
-  File file = File(result.files.single.path.toString());
+  if(result != null){
+    File file = File(result.files.single.path.toString());
     print("asad"+file.toString());
     setState(() {
       ww=imgggg();
       img=result.files.single.path.toString();
+      height = height + 20.0;
+      width = width + 20.0;
+      pathh=result.files.single.path.toString();
+      nameee=result.files.first.name;
     });
-  upload(result.files.single.path.toString(), result.files.first.name);
-}
+  }}
+print(cc);
+    if(cc == 2) {
+      print("uploading................");
+      print(pathh);
+      print(nameee);
+      upload(pathh,nameee );
+    }
     // File file = await FilePicker.getFile
     //   type: FileType.custom,
     //   allowedExtensions: ['pdf','docx'], //here you can add any of extention what you need to pick
@@ -140,7 +160,7 @@ if(result != null){
                               context,
                               new MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      firebaseinstance()));
+                                      main_page()));
                         },
                       ),
                     ),
@@ -168,39 +188,78 @@ if(result != null){
                         children: [
                           Image(
                               image: AssetImage(
-                            'images/Vector.png',
+                            'images/fork.png',
                           )),
                           ww,
                           Image(
                             image: AssetImage(
-                              'images/Vector (1).png',
+                              'images/spoon.png',
                             ),
                           ),
                         ],
                       ),
                       Text(tex,style: TextStyle(fontSize: 20),),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          border: Border.all(
-                            color: Colors.green,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              border: Border.all(
+                                color: Colors.green,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: FlatButton(
+                              // color: Colors.green,
+                              child: icon_w,
+                              onPressed: () {
+                                // upload();
+                                cc += 1;
+                                filee();
+
+                                setState(() {
+
+                                  print("cc : "+cc.toString());
+                                  tex="Will you eat this?";
+                                  icon_w=icon_c;
+                                  filee();
+
+                                  // height = height + 20.0;
+                                  // width = width + 20.0;
+                                });
+                              },
+                            ),
                           ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: FlatButton(
-                          // color: Colors.green,
-                          child: icon_w,
-                          onPressed: () {
-                            // upload();
-                            filee();
-                            setState(() {
-                              tex="Will you eat this?";
-                              icon_w=icon_c;
-                              height = height + 20.0;
-                              width = width + 20.0;
-                            });
-                          },
-                        ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              border: Border.all(
+                                color: Colors.green,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: FlatButton(
+                              // color: Colors.green,
+                              child: Icon(Icons.refresh_sharp,color: Colors.white,),
+                              onPressed: () {
+                                // upload();
+                                // filee();
+                                setState(() {
+                                  cc = 0;
+
+                                  ww=placeholder();
+                                  print("cc : "+cc.toString());
+                                  tex="Click your meal";
+                                  icon_w=Icon(Icons.camera_alt,color: Colors.white,);
+                                  height = 20;
+                                  width =  20;
+                                });
+                              },
+                            ),
+                          ),
+
+                        ],
                       ),
                     ],
                   ),
@@ -221,7 +280,7 @@ class placeholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image(
         image: AssetImage(
-          'images/Vector (2).png',
+          'images/circle.png',
         ));
   }
 }
